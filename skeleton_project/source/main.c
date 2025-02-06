@@ -55,7 +55,7 @@ State finder:
 
 State tracker:
     - public struct representing the state of the system
-    - private struct representing buttons pressed
+        - private struct representing buttons pressed
     - public updateState(&state, &queue) - entry point, updates the state of the system by calling these sub-functions
                 also modifies a reference to the queue struct, adding new instructions to it
         - private getFloorState(&state) - updates the current floor and wether the elevator is at a floor
@@ -69,8 +69,8 @@ Instruction queue:
     - public void addInstruction(&queue, const &instruction, const &state) - entry point, adds a new instruction to the queue. calls sortInstructions before returning
         - private void sortInstructions(&queue) - sorts the instructions in the queue, deciding which order they should be performed in
 
-    public clearQueue(&queue) - entry point, clears the queue
-    public clearInstruction(&queue, const int currentFloor) - entry point, clears the instruction at the current floor
+    - public clearQueue(&queue) - entry point, clears the queue
+    - public clearInstruction(&queue, const int currentFloor) - entry point, clears the instruction at the current floor
 
 Logic Controller:
     - public void controll(&state, &queue, &outputs) - entry point for controll. 
@@ -90,6 +90,33 @@ Output manager:
             - button lights
             - open door light
 
+
+Structs:
+state:
+    - int currentFloor
+    - timer timer
+    - bool onFloor
+    - bool obstruction
+    - bool stopButton
+
+timer:
+    - double startTime
+    - bool active
+
+queue:
+    - int length
+    - instruction instructions[10]
+
+outputs:
+    - bool motorDirection
+    - bool motorOn
+    - lights lights  
+
+lights:
+    - bool floorLights[4]
+    - bool buttonLights[3][2]
+    - bool internalButtonLights[4]
+    - bool openDoorLight
 */
 
 
