@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <time.h>
+#include "driver/elevio.h"
+
+
+/*
+Structure:
+
+main driver: manages the different modules, dermining when they should do which work. Sub-modules:
+
+    State finder: Run at program start to initiate a defined state. Initiates a state tracker in its place once a defined state has been reached
+
+    State tracker (input manager): interfaces w. harware to update the current state of the system. 
+        - current floor
+        - obstruction
+        - stop-button
+        - ect.
+
+    Instruction queue:
+        - Add to queue given inputs (entry point is the State tracker)
+        - Internal logic for queue: what instructions should be executed first (entry point is the main driver)
+        - Recomends next floor to visit (entry point is the Logic controller)
+        - Clears queue when requested (entry point is the Locig controller)
+
+
+    Logic controller #split maybe?: 
+        - initiate timed stop if a floor with a relevant instruction in queue has been reached
+        - delays the timed stop while an obstruction is active
+        - sets outputs to a halt when requested
+        - sends ouput instructions to the output manger
+        - sets all relevant lights
+        - interfaces with instruction queue
+
+    Output manager:
+        - interfaces w. hardware to realise instructions
+        - extra failsafe that outputs are not given if stop or obstruction are active
+*/
+
+
+int main(){
+    elevio_init();
+    
+    printf("=== Example Program ===\n");
+    printf("Press the stop button on the elevator panel to exit\n");
+
+    elevio_motorDirection(DIRN_UP);
+
+    while(1){
+        int floor = elevio_floorSensor();
+
+        //This is integer printing in C
+        printf("%d\n", floor);
+
+        if(floor == 0){
+            elevio_motorDirection(DIRN_UP);
+        }
+
+        if(floor == N_FLOORS-1){
+            elevio_motorDirection(DIRN_DOWN);
+        }
+
+
+        for(int f = 0; f < N_FLOORS; f++){
+            for(int b = 0; b < N_BUTTONS; b++){
+                int btnPressed = elevio_callButton(f, b);
+                elevio_buttonLamp(f, b, btnPressed);
+            }
+        }
+
+        if(elevio_obstruction()){
+            elevio_stopLamp(1);
+        } else {
+            elevio_stopLamp(0);
+        }
+        
+        if(elevio_stopButton()){
+            elevio_motorDirection(DIRN_STOP);
+            break;
+        }
+        
+        nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
+    }
+
+    return 0;
+}
