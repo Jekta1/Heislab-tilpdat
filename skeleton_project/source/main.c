@@ -117,6 +117,10 @@ lights:
     - bool buttonLights[3][2]
     - bool internalButtonLights[4]
     - bool openDoorLight
+
+Tests:
+Integration testing: ---
+Unit testing: ---
 */
 
 
