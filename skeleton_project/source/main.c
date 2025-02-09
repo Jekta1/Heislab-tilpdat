@@ -77,8 +77,8 @@ Logic Controller Finite State Machine:
         
     - State transitions happen based on a change of the observed state of the physical system. Conditions for each state:
         1: currentFloor == -1, the init value
-        2: currentFloor == target && onFloor || timer active (if the timer runs out, the controller, not the state should deactivate it)
-        3: !onFloor && stopButton || queue.length < 1
+        2: currentFloor == target && onFloor || timer.active (if the timer runs out, the controller, not the state should deactivate it)
+        3: !timer.active && stopButton || queue.length < 1
         4: else: 
         
     - Outputs:
