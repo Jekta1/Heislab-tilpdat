@@ -72,12 +72,12 @@ Logic Controller Finite State Machine:
     - possible states:
         1 Non-defined state - move down untill state is defined. 
         2 On floor, waiting - turn on open door button. If stop or obstruction active, reset the timer. Run clearInstruction for the current floor.
-        3 Stopping while moving - turn off motor output, preserving all other inputs. This state is also entered if there is no target.
+        3 Stopp in place - turn off motor output, preserving all other outputs. This state is also entered if there is no target.
         4 Moving - set motor inputs based on queue target.
         
     - State transitions happen based on a change of the observed state of the physical system. Conditions for each state:
         1: currentFloor == -1, the init value
-        2: currentFloor == target or timer active (if the timer runs out, the controller, not the state should deactivate it)
+        2: currentFloor == target || timer active (if the timer runs out, the controller, not the state should deactivate it)
         3: !onFloor && stopButton || queue.length < 1
         4: currentFloor != target && !timer.active 
             (conditions uneccecary as an "else" statement should suffice, but for error catching they are provided)
@@ -85,12 +85,17 @@ Logic Controller Finite State Machine:
         
     - Outputs:
         1: No lights, motorOn = true, motorDir = DOWN
-        2: queue lights, openDoorLight = true, motorOn = false
+        2: queue lights, openDoorLight = true, motorOn = false, clearInstructions
         3: queue lights, motorOn = false
         4: queue lights, openDoorLight = false, motorOn = true, motorDir = Towards target.
 
     Implementation:
-    - public void controll(&state, &queue, &outputs) - entry point for controll.
+    - public void controll(&state, &queue, &outputs) - entry point for controll. Decides which state should be active. 
+        Checks if the timer is active, clears the queue if stopped, sets stopLight = stopButton and descided which states should be active.
+        - private void nonDefinedState(const &state, &outputs)
+        - private void onFloor(const &state, &outputs)
+        - private void stopp(&outputs)
+        - private void move(const &state, const& queue, &outputs)
         
 Output manager:
     - public void realiseInstructions(const &outputs) - entry point. asserts no illigal outputs are given
@@ -127,6 +132,7 @@ lights:
     - bool buttonLights[3][2]
     - bool internalButtonLights[4]
     - bool openDoorLight
+    - bool stopLight
 
 Enums:
 UP and DOWN
