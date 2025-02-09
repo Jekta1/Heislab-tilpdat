@@ -77,11 +77,9 @@ Logic Controller Finite State Machine:
         
     - State transitions happen based on a change of the observed state of the physical system. Conditions for each state:
         1: currentFloor == -1, the init value
-        2: currentFloor == target || timer active (if the timer runs out, the controller, not the state should deactivate it)
+        2: currentFloor == target && onFloor || timer active (if the timer runs out, the controller, not the state should deactivate it)
         3: !onFloor && stopButton || queue.length < 1
-        4: currentFloor != target && !timer.active 
-            (conditions uneccecary as an "else" statement should suffice, but for error catching they are provided)
-        5: else: ambigous (error) state
+        4: else: 
         
     - Outputs:
         1: No lights, motorOn = true, motorDir = DOWN
