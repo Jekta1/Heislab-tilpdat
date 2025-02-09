@@ -87,13 +87,13 @@ Logic Controller Finite State Machine:
         3: motorOn = false
         4: openDoorLight = false, motorOn = true, motorDir = Towards target.
 
-    Implementation:
-    - public void controll(&state, &queue, &outputs) - entry point for controll. Decides which state should be active. 
-        Checks if the timer is active, clears the queue if stopped, sets stopLight = stopButton, sets queueLights and descided which state should be active.
-        - private void nonDefinedState(const &state, &outputs)
-        - private void onFloor(const &state, &outputs)
-        - private void stopp(&outputs)
-        - private void move(const &state, const& queue, &outputs)
+    - Implementation:
+        - public void controll(&state, &queue, &outputs) - entry point for controll. Decides which state should be active. 
+            Checks if the timer is active, clears the queue if stopped, sets stopLight = stopButton, sets queueLights and descided which state should be active.
+            - private void nonDefinedState(const &state, &outputs)
+            - private void onFloor(const &state, &outputs)
+            - private void stopp(&outputs)
+            - private void move(const &state, const& queue, &outputs)
         
 Output manager:
     - public void realiseInstructions(const &outputs) - entry point. asserts no illigal outputs are given
