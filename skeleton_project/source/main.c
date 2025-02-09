@@ -83,13 +83,13 @@ Logic Controller Finite State Machine:
         
     - Outputs:
         1: No lights, motorOn = true, motorDir = DOWN
-        2: queue lights, openDoorLight = true, motorOn = false, clearInstructions
-        3: queue lights, motorOn = false
-        4: queue lights, openDoorLight = false, motorOn = true, motorDir = Towards target.
+        2: openDoorLight = true, motorOn = false, clearInstructions
+        3: motorOn = false
+        4: openDoorLight = false, motorOn = true, motorDir = Towards target.
 
     Implementation:
     - public void controll(&state, &queue, &outputs) - entry point for controll. Decides which state should be active. 
-        Checks if the timer is active, clears the queue if stopped, sets stopLight = stopButton and descided which states should be active.
+        Checks if the timer is active, clears the queue if stopped, sets stopLight = stopButton, sets queueLights and descided which states should be active.
         - private void nonDefinedState(const &state, &outputs)
         - private void onFloor(const &state, &outputs)
         - private void stopp(&outputs)
