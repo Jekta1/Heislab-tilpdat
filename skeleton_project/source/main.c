@@ -9,9 +9,6 @@
 Structure:
 
 main driver: manages the different modules, dermining when they should do which work. Sub-modules:
-
-    State finder: Run at program start to initiate a defined state. Initiates a state tracker in its place once a defined state has been reached
-
     State tracker (input manager): interfaces w. hardware to update the current state of the system. 
         - current floor
         - obstruction
@@ -25,12 +22,12 @@ main driver: manages the different modules, dermining when they should do which 
         - Clears queue when requested (entry point is the Logic controller)
 
 
-    Logic controller #split maybe?: 
+    Logic controller state machine:
+        - finds a defined state if none has been reached
         - initiate timed stop if a floor with a relevant instruction in queue has been reached
         - delays the timed stop while an obstruction is active
         - sets outputs to a halt when requested
         - creates ouput instructions to the output manger
-        - sets all relevant lights
         - interfaces with instruction queue
 
     Output manager:
@@ -44,14 +41,10 @@ Module designs:
 Main Driver:
     - public state, queue, outputs init() - initialises the state, queue and outputs
     - public void run() - entry point, runs either state finder or driver depending on if a state has been found
-        - private bool stateFinder(&state, &outputs) - runs pipeline to find a defined state: first running state finder. returns wether a state has been found
-        - private void driver(&state, &queue, &outputs) - runs pipeline to manage the system: first running state tracker, then logic controller, then output manager
 
-State finder:
-    - public bool checkState(&state, &outputs) - interfacing, public function. returns a bool indicating wether the state has been reached. calls
-        - private void setOutputs(&outputs) - interfaces with the ouput manager to move the elevator
-        - private void initialiseState(&state) - sets the initial state of the system, once a state has been found. 
-            Once accived, the main driver will override the state finder with the state tracker and logic controller
+Utils: any utility functions that may be usefull but not related to a certain module.
+    - retrieving the system time
+    - logging functions for state, queue and outputs.
 
 State tracker:
     - public struct representing the state of the system
@@ -71,17 +64,34 @@ Instruction queue:
 
     - public clearQueue(&queue) - entry point, clears the queue
     - public clearInstruction(&queue, const int currentFloor) - entry point, clears the instruction at the current floor
+    - public lightQueueStops(const &queue, &outputs) - sets the output lights based on the queue
 
-Logic Controller:
-    - public void controll(&state, &queue, &outputs) - entry point for controll. 
-        determines which sub-functions to call, given the state. also clears any instructions that end at the current floor
+Logic Controller Finite State Machine: 
+    The current floor number and direction of movement are not considered as states, as they do not change the behaviour in a state.
+    State is read both from the inputs and queue.
+    - possible states:
+        1 Non-defined state - move down untill state is defined. 
+        2 On floor, waiting - turn on open door button. If stop or obstruction active, reset the timer. Run clearInstruction for the current floor.
+        3 Stopping while moving - turn off motor output, preserving all other inputs. This state is also entered if there is no target.
+        4 Moving - set motor inputs based on queue target.
         
-        - private bool manageTimer(&state) - if the timer is not acitve desipite having reached the target, activates tge timer. 
-            checks for conditions that should reset the timer and returns a bool indicating wether the timer is active, eg. we should wait
-        - private void setTarget(const &state, const &queue, &outputs) - sets the target floor of the elevator.
-        - private void setLights(const &state, &outputs) - updates output light instructions
-        - private void setMotorState(const &state, &outputs) - sets the motor state of the elevator, based on weather the elevator should move or not and what the target is
+    - State transitions happen based on a change of the observed state of the physical system. Conditions for each state:
+        1: currentFloor == -1, the init value
+        2: currentFloor == target or timer active (if the timer runs out, the controller, not the state should deactivate it)
+        3: !onFloor && stopButton || queue.length < 1
+        4: currentFloor != target && !timer.active 
+            (conditions uneccecary as an "else" statement should suffice, but for error catching they are provided)
+        5: else: ambigous (error) state
+        
+    - Outputs:
+        1: No lights, motorOn = true, motorDir = DOWN
+        2: queue lights, openDoorLight = true, motorOn = false
+        3: queue lights, motorOn = false
+        4: queue lights, openDoorLight = false, motorOn = true, motorDir = Towards target.
 
+    Implementation:
+    - public void controll(&state, &queue, &outputs) - entry point for controll.
+        
 Output manager:
     - public void realiseInstructions(const &outputs) - entry point. asserts no illigal outputs are given
         - private void setMotor(const &outputs) - sets the motor direction and turns it on/off
@@ -117,6 +127,9 @@ lights:
     - bool buttonLights[3][2]
     - bool internalButtonLights[4]
     - bool openDoorLight
+
+Enums:
+UP and DOWN
 
 Tests:
 Integration testing: ---
