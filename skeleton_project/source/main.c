@@ -89,7 +89,7 @@ Logic Controller Finite State Machine:
 
     Implementation:
     - public void controll(&state, &queue, &outputs) - entry point for controll. Decides which state should be active. 
-        Checks if the timer is active, clears the queue if stopped, sets stopLight = stopButton, sets queueLights and descided which states should be active.
+        Checks if the timer is active, clears the queue if stopped, sets stopLight = stopButton, sets queueLights and descided which state should be active.
         - private void nonDefinedState(const &state, &outputs)
         - private void onFloor(const &state, &outputs)
         - private void stopp(&outputs)
