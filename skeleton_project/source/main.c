@@ -127,7 +127,7 @@ outputs:
 
 lights:
     - bool floorLights[4]
-    - bool buttonLights[3][2]
+    - bool buttonLights[4][2]
     - bool internalButtonLights[4]
     - bool openDoorLight
     - bool stopLight

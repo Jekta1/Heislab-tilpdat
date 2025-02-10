@@ -1,7 +1,7 @@
 #include "utils.h"
 
 
-double getTime(){
+double getSysTime(){
     return (double)clock()/CLOCKS_PER_SEC;
 }
 
@@ -36,7 +36,7 @@ void logOutputs(const Output* output){
         printf("%d ", output->lights.floorLights[i]);
     }
     printf("\nButton lights: ");
-    for(int i = 0; i < 3; i++){
+    for(int i = 0; i < 4; i++){
         for(int j = 0; j < 2; j++){
             printf("%d ", output->lights.buttonLights[i][j]);
         }

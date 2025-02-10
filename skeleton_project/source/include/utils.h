@@ -5,7 +5,7 @@
 #include <time.h>
 #include "dataStructures.h"
 
-double getTime();
+double getSysTime();
 void logState(const State* state);
 void logTimer(const Timer* timer);
 void logQueue(const Queue* queue);

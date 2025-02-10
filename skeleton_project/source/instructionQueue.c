@@ -3,10 +3,9 @@
 
 void addInstruction(Queue* queue, Instruction instruction){
     if (queue->instructions == NULL){
-        //initialise the queue, since class constructors are forbidden, apparantly
-        //malloc the initial memory
+        //initialise the queue, since class constructors are illegal now, apparantly
         queue->length = 0;
-        queue->capacity = 10;
+        queue->capacity = 1;
         queue->instructions = (Instruction*)malloc(queue->capacity * sizeof(Instruction));
     }
 
@@ -34,7 +33,7 @@ void removeInstruction(Queue* queue, int currentFloor){
 
             //shift all instructions one step back to fill the gap
             for (int j = i; j < queue->length - 1; j++){
-                queue->instructions[j] = queue->instructions[j + 1];
+                queue->instructions[j] = queue->instructions[j+1];
             }
             queue->length--;
             return;
@@ -46,7 +45,7 @@ void resetQueueLights(Output* output){
     for (int i = 0; i < 4; i++){
         output->lights.internalButtonLights[i] = false;
     }
-    for (int i = 0; i < 3; i++){
+    for (int i = 0; i < 4; i++){
         for (int j = 0; j < 2; j++){
             output->lights.buttonLights[i][j] = false;
         }
