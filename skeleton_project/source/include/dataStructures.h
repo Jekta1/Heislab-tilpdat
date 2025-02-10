@@ -1,6 +1,12 @@
 #ifndef DATASTRUCTURES_H
 #define DATASTRUCTURES_H
 
+
+typedef enum Direction{
+    UP,
+    DOWN
+};
+
 typedef struct State{
     int currentFloor;
     struct Timer timer;
@@ -27,17 +33,14 @@ typedef struct Lights{
     bool stopLight;
 };
 
-typedef struct Queue{
-    int length;
-    Instruction* instructions;
-};
+
 typedef struct Instruction{
     int targetFloor;
 };
 
-typedef enum Direction{
-    UP,
-    DOWN
+typedef struct Queue{
+    int length;
+    Instruction* instructions;
 };
 
 #endif // DATASTRUCTURES_H
