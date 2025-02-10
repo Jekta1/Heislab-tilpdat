@@ -72,7 +72,7 @@ Logic Controller Finite State Machine:
     - possible states:
         1 Non-defined state - move down untill state is defined. 
         2 On floor, waiting - turn on open door button. If stop or obstruction active, reset the timer. Run clearInstruction for the current floor.
-        3 Stopp in place - turn off motor output, preserving all other outputs. This state is also entered if there is no target.
+        3 Idle in place - turn off motor output, preserving all other outputs. This state is also entered if there is no target.
         4 Moving - set motor inputs based on queue target.
         
     - State transitions happen based on a change of the observed state of the physical system. Conditions for each state:
@@ -88,11 +88,11 @@ Logic Controller Finite State Machine:
         4: openDoorLight = false, motorOn = true, motorDir = Towards target.
 
     - Implementation:
-        - public void controll(&state, &queue, &outputs) - entry point for controll. Decides which state should be active. 
+        - public void controll(&state, &queue, &outputs) - entry point for controll.
             Checks if the timer is active, clears the queue if stopped, sets stopLight = stopButton, sets queueLights and descided which state should be active.
             - private void nonDefinedState(const &state, &outputs)
             - private void onFloor(const &state, &outputs)
-            - private void stopp(&outputs)
+            - private void idle(&outputs)
             - private void move(const &state, const& queue, &outputs)
         
 Output manager:
