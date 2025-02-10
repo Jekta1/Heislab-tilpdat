@@ -1,46 +1,49 @@
 #ifndef DATASTRUCTURES_H
 #define DATASTRUCTURES_H
 
+#include <stdbool.h>
 
-typedef enum Direction{
+typedef enum {
     UP,
-    DOWN
-};
+    DOWN,
+    STOP
+} Direction;
 
-typedef struct State{
+typedef struct {
     int currentFloor;
-    struct Timer timer;
+    Timer timer;
     bool onFloor;
     bool obstruction;
     bool stopButton;
-};
+} State;
 
-typedef struct Timer{
+typedef struct {
     double startTime;
     bool active;
-};
+} Timer;
 
-typedef struct Output{
+typedef struct {
     Direction motorDirection;
-    bool motorOn;
-    struct Lights lights;
-};
-typedef struct Lights{
+    Lights lights;
+} Output;
+typedef struct {
     bool floorLights[4];
-    bool buttonLights[3][2];
+    bool buttonLights[4][2]; // [floor][up/down]. 0 is up, 1 is down. [0][1] and [3][0] unused
     bool internalButtonLights[4];
     bool openDoorLight;
     bool stopLight;
-};
+} Lights;
 
 
-typedef struct Instruction{
+typedef struct {
     int targetFloor;
-};
+    Direction direction; //in the context of an Instruction, STOP represents an internal button press
+} Instruction;
 
-typedef struct Queue{
+typedef struct {
     int length;
+    int capacity;
     Instruction* instructions;
-};
+} Queue;
 
 #endif // DATASTRUCTURES_H
