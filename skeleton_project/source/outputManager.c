@@ -30,8 +30,7 @@ void setLights(const Output* output){
     if (output->lights.floorIndicator > -1){
         elevio_floorIndicator(output->lights.floorIndicator);
     }
-    elevio_doorOpenLamp(output->lights.openDoorLight);
-    elevio_stopLamp(true);//output->lights.stopLight);   
+    elevio_doorOpenLamp(output->lights.openDoorLight);  
 }
 void executeOutput(const Output* output){
     setMotor(output);
