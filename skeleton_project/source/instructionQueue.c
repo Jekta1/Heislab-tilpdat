@@ -93,9 +93,10 @@ void removeInstruction(Queue* queue, int currentFloor){
                 queue->instructions[j] = queue->instructions[j+1];
             }
             queue->length--;
-            return;
+
         }
     }
+    return;
 }
 
 void resetQueueLights(Output* output){
