@@ -31,7 +31,7 @@ void setLights(const Output* output){
         elevio_floorIndicator(output->lights.floorIndicator);
     }
     elevio_doorOpenLamp(output->lights.openDoorLight);
-    elevio_stopLamp(output->lights.stopLight);   
+    elevio_stopLamp(true);//output->lights.stopLight);   
 }
 void executeOutput(const Output* output){
     setMotor(output);

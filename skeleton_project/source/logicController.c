@@ -13,7 +13,7 @@ void sequenceLogic(State* state, Queue* queue, Output* output){
     lightQueueStops(queue, output);
 
     //disable timer if inactive
-    if (getSysTime() > state->timer.startTime + 3){
+    if (getSysTime() > state->timer.startTime + 3000){
         state->timer.active = false;
     }
 
@@ -21,11 +21,22 @@ void sequenceLogic(State* state, Queue* queue, Output* output){
         //edge case handeling: remember if you are above or below the current floor
         state->directionFromLastFloor = output->motorDirection;
     }
-    
+
+    if (!state->obstruction){
+        //edge case handeling: only ever close the door if there is no obstruction
+        output->lights.openDoorLight = false;
+    }
+
+
+    if (state->stopButton && state->onFloor){
+        //edge case handeling: if the stop button is pressed on a floor, open the door
+        output->lights.openDoorLight = true;
+    }
 }
 
-void noState(Output* output){
+void noState(Output* output, Queue* queue){
     output->motorDirection = DOWN;
+    clearQueue(queue);
 }
 
 void onFloor(State* state, Queue* queue, Output* output){
@@ -72,10 +83,16 @@ void moving(Instruction targetInstruction, State* state, Output* output){
 }
 
 void controller(State* state, Queue* queue, Output* output){
+    if (state->currentFloor == -1){
+        noState(output, queue);
+        return;
+    }
+
     sequenceLogic(state, queue, output);
 
-    output->lights.openDoorLight = false;
+    
 
+    //fetch the target instruction
     Instruction targetInstruction;
     if (queue->length >= 1){
         targetInstruction = queue->instructions[0]; 
@@ -86,10 +103,7 @@ void controller(State* state, Queue* queue, Output* output){
     }
 
 
-    if (state->currentFloor == -1){
-        noState(output);
-    }
-    else if ((state->currentFloor == targetInstruction.targetFloor && state->onFloor) || state->timer.active){
+    if ((state->currentFloor == targetInstruction.targetFloor && state->onFloor) || state->timer.active){
         onFloor(state, queue, output);
     }
     else if ((!state->timer.active && state->stopButton) || queue->length < 1){

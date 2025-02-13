@@ -1,8 +1,11 @@
 #include "include/utils.h"
+#include <sys/time.h>
 
 
-double getSysTime(){
-    return 100*(double)clock()/CLOCKS_PER_SEC;
+double getSysTime() {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return (double)(tv.tv_sec) * 1000 + (double)(tv.tv_usec) / 1000;
 }
 
 void logState(const State* state){

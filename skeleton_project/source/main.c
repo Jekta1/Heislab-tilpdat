@@ -177,6 +177,8 @@ int main(){
         updateState(&state, &queue);
         controller(&state, &queue, &output);
         executeOutput(&output);
+
+        elevio_stopLamp(1);
         nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);    
     }
 }
