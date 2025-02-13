@@ -23,20 +23,25 @@ void smartInsert(const State* state, Queue* queue, Instruction instruction){
     for (int i = 0; i < queue->length; i++){
 
         //check up direction
-        if (queue->instructions[i].targetFloor >= instruction.targetFloor && instruction.targetFloor > prevFloor.targetFloor){
+        if (queue->instructions[i].targetFloor >= instruction.targetFloor && instruction.targetFloor >= prevFloor.targetFloor){
+            
+            //edge-case handeling:
+            if (prevFloor.targetFloor != instruction.targetFloor || (prevFloor.direction == DOWN && i == 0)){
 
-            if (instruction.direction == UP || instruction.direction == STOP){
-                insertToQueue(queue, instruction, i);
-                return;
+                if (instruction.direction == UP || instruction.direction == STOP){
+                    insertToQueue(queue, instruction, i);
+                    return;
+                }
             }
         }
 
         //check down direction
-        if (queue->instructions[i].targetFloor <= instruction.targetFloor && instruction.targetFloor < prevFloor.targetFloor){
-
-            if (instruction.direction == DOWN || instruction.direction == STOP){
-                insertToQueue(queue, instruction, i);
-                return;
+        if (queue->instructions[i].targetFloor <= instruction.targetFloor && instruction.targetFloor <= prevFloor.targetFloor){
+            if (prevFloor.targetFloor != instruction.targetFloor || (prevFloor.direction == UP && i == 0)){
+                if (instruction.direction == DOWN || instruction.direction == STOP){
+                    insertToQueue(queue, instruction, i);
+                    return;
+                }
             }
         }
         prevFloor = queue->instructions[i];
