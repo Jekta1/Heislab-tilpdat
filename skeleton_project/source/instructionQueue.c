@@ -1,7 +1,16 @@
-#include "instructionQueue.h"
+#include "include/instructionQueue.h"
 #include <stdlib.h>
 
+
 void addInstruction(Queue* queue, Instruction instruction){
+    //Only add instructions that are not already in the queue
+    for (int i = 0; i < queue->length; i++){
+        if (queue->instructions[i].targetFloor == instruction.targetFloor && queue->instructions[i].direction == instruction.direction){
+            return;
+        }
+    }
+
+
     if (queue->instructions == NULL){
         //initialise the queue, since class constructors are illegal now, apparantly
         queue->length = 0;

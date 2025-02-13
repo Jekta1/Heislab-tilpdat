@@ -3,7 +3,12 @@
 #include <signal.h>
 #include <time.h>
 #include "driver/elevio.h"
-
+#include "include/dataStructures.h"
+#include "include/stateTracker.h"
+#include "include/instructionQueue.h"
+#include "include/outputManager.h"
+#include "include/logicController.h"
+#include "include/utils.h"
 
 /*
 Structure:
@@ -139,9 +144,42 @@ Tests:
 Integration testing: ---
 Unit testing: ---
 */
-
-
 int main(){
+    elevio_init();
+
+    //init
+    State state;
+    state.currentFloor = -1;
+    state.onFloor = false;
+    state.obstruction = false;
+    state.stopButton = false;
+
+    Queue queue;
+    queue.length = 0;
+    queue.capacity = 0;
+    queue.instructions = NULL;
+
+    Output output;
+    output.motorDirection = STOP;
+    output.lights.floorIndicator = 0;
+    output.lights.openDoorLight = false;
+    output.lights.stopLight = false;
+    for (int i = 0; i < 4; i++){
+        output.lights.internalButtonLights[i] = false;
+        output.lights.buttonLights[i][0] = false;
+        output.lights.buttonLights[i][1] = false;
+    }
+
+
+    while(1){
+        updateState(&state, &queue);
+        controller(&state, &queue, &output);
+        executeOutput(&output);
+        nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);    
+    }
+}
+
+int mainSkeletonOld(){
     elevio_init();
     
     printf("=== Example Program ===\n");

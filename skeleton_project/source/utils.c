@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "include/utils.h"
 
 
 double getSysTime(){
@@ -31,11 +31,8 @@ void logOutputs(const Output* output){
     printf("Outputs: \n");
     printf("Motor direction: %d\n", output->motorDirection);
     printf("Lights: \n");
-    printf("Floor lights: ");
-    for(int i = 0; i < 4; i++){
-        printf("%d ", output->lights.floorLights[i]);
-    }
-    printf("\nButton lights: ");
+    printf("Floor light: %d\n", output->lights.floorIndicator);
+    printf("Button lights: ");
     for(int i = 0; i < 4; i++){
         for(int j = 0; j < 2; j++){
             printf("%d ", output->lights.buttonLights[i][j]);

@@ -7,8 +7,13 @@ typedef enum {
     UP,
     DOWN,
     STOP
-} Direction;
+} Direction; //We recognised to late this already exsisted in elevio.h
 
+
+typedef struct {
+    double startTime;
+    bool active;
+} Timer;
 typedef struct {
     int currentFloor;
     Timer timer;
@@ -17,22 +22,19 @@ typedef struct {
     bool stopButton;
 } State;
 
+
 typedef struct {
-    double startTime;
-    bool active;
-} Timer;
+    bool buttonLights[4][2]; // [floor][up/down]. 0 is up, 1 is down. [0][1] and [3][0] unused
+    bool internalButtonLights[4];
+    int floorIndicator;
+    bool openDoorLight;
+    bool stopLight;
+} Lights;
 
 typedef struct {
     Direction motorDirection;
     Lights lights;
 } Output;
-typedef struct {
-    bool floorLights[4];
-    bool buttonLights[4][2]; // [floor][up/down]. 0 is up, 1 is down. [0][1] and [3][0] unused
-    bool internalButtonLights[4];
-    bool openDoorLight;
-    bool stopLight;
-} Lights;
 
 
 typedef struct {

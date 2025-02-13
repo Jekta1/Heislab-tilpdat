@@ -3,6 +3,6 @@
 
 #include "dataStructures.h"
 
-void updateState(State* state);
+void updateState(State* state, Queue* queue);
 
 #endif // STATETRACKER_H
