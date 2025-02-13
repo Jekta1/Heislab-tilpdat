@@ -65,7 +65,8 @@ State tracker:
 Instruction queue:
     - public struct representing the queue. contains a list of instructions
     - public void addInstruction(&queue, const &instruction, const &state) - entry point, adds a new instruction to the queue. calls sortInstructions before returning
-        - private void sortInstructions(&queue) - sorts the instructions in the queue, deciding which order they should be performed in
+        - private void sort
+        printf("directionfromlastfloor: %d\n", state.directionFromLastFloor);Instructions(&queue) - sorts the instructions in the queue, deciding which order they should be performed in
 
     - public clearQueue(&queue) - entry point, clears the queue
     - public clearInstruction(&queue, const int currentFloor) - entry point, clears the instruction at the current floor
@@ -87,6 +88,7 @@ Logic Controller Finite State Machine:
         4: else: 
         
     - Outputs:
+        printf("directionfromlastfloor: %d\n", state.directionFromLastFloor);
         1: No lights, motorOn = true, motorDir = DOWN
         2: openDoorLight = true, motorOn = false, clearInstructions
         3: motorOn = false

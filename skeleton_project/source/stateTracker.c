@@ -24,13 +24,13 @@ void getStopButtonState(State *state){
 void getButtonPresses(State *state, Queue *queue){
     for (int i = 0; i < 4; i++){
         if (elevio_callButton(i, BUTTON_HALL_UP)){
-            addInstruction(queue, (Instruction){i, UP});
+            addInstruction(queue, (Instruction){i, UP}, state);
         }
         if (elevio_callButton(i, BUTTON_HALL_DOWN)){
-            addInstruction(queue, (Instruction){i, DOWN});
+            addInstruction(queue, (Instruction){i, DOWN}, state);
         }
         if (elevio_callButton(i, BUTTON_CAB)){
-            addInstruction(queue, (Instruction){i, STOP});
+            addInstruction(queue, (Instruction){i, STOP}, state);
         }
     }
 }

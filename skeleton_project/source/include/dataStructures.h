@@ -20,6 +20,7 @@ typedef struct {
     bool onFloor;
     bool obstruction;
     bool stopButton;
+    Direction directionFromLastFloor;
 } State;
 
 

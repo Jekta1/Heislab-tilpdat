@@ -1,4 +1,5 @@
 #include "include/logicController.h"
+#include "driver/elevio.h"
 #include "include/dataStructures.h"
 #include "include/instructionQueue.h"
 #include "include/utils.h"
@@ -15,6 +16,12 @@ void sequenceLogic(State* state, Queue* queue, Output* output){
     if (getSysTime() > state->timer.startTime + 3){
         state->timer.active = false;
     }
+
+    if (state->onFloor && output->motorDirection != STOP){
+        //edge case handeling: remember if you are above or below the current floor
+        state->directionFromLastFloor = output->motorDirection;
+    }
+    
 }
 
 void noState(Output* output){
@@ -22,6 +29,7 @@ void noState(Output* output){
 }
 
 void onFloor(State* state, Queue* queue, Output* output){
+
     output->motorDirection = STOP;
     output->lights.openDoorLight = true;
 
@@ -38,7 +46,6 @@ void onFloor(State* state, Queue* queue, Output* output){
         //reset timer if obstructed or stopped
         state->timer.startTime = getSysTime();
     }
-
 }
 
 void idle(Output* output){
@@ -53,8 +60,13 @@ void moving(Instruction targetInstruction, State* state, Output* output){
         output->motorDirection = DOWN;
     }
     else{
-        //edge case: elevator was last on the target floor
-        output->motorDirection = DOWN;
+        //edge case handeling: elevator was last on the target floor
+        if (state->directionFromLastFloor == UP){
+            output->motorDirection = DOWN;
+        }
+        else{
+            output->motorDirection = UP;
+        }
     }
     
 }
@@ -69,7 +81,7 @@ void controller(State* state, Queue* queue, Output* output){
         targetInstruction = queue->instructions[0]; 
     }
     else {
-        // edge case: queue is empty
+        // edge case handleded: queue is empty
         targetInstruction = (Instruction){-2, STOP};
     }
 
@@ -77,10 +89,10 @@ void controller(State* state, Queue* queue, Output* output){
     if (state->currentFloor == -1){
         noState(output);
     }
-    else if (state->currentFloor == targetInstruction.targetFloor && state->onFloor || state->timer.active){
+    else if ((state->currentFloor == targetInstruction.targetFloor && state->onFloor) || state->timer.active){
         onFloor(state, queue, output);
     }
-    else if (!state->timer.active && state->stopButton || queue->length < 1){
+    else if ((!state->timer.active && state->stopButton) || queue->length < 1){
         idle(output);
     }
     else{

@@ -27,7 +27,9 @@ void setLights(const Output* output){
         elevio_buttonLamp(i, BUTTON_HALL_DOWN, output->lights.buttonLights[i][1]);
     }
     
-    elevio_floorIndicator(output->lights.floorIndicator);
+    if (output->lights.floorIndicator > -1){
+        elevio_floorIndicator(output->lights.floorIndicator);
+    }
     elevio_doorOpenLamp(output->lights.openDoorLight);
     elevio_stopLamp(output->lights.stopLight);   
 }

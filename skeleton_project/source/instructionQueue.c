@@ -1,8 +1,53 @@
 #include "include/instructionQueue.h"
+#include "include/dataStructures.h"
 #include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
 
+void insertToQueue(Queue* queue, Instruction instruction, int index){
+    //insert an element in the (potentially) middle of the queue
+    assert(index >= 0 && index < queue->length);
 
-void addInstruction(Queue* queue, Instruction instruction){
+    for (int i = index; i < queue->length+1; i++){
+        Instruction temp = queue->instructions[i];
+        queue->instructions[i] = instruction;
+        instruction = temp;
+    }
+    queue->length++;
+
+}
+
+void smartInsert(const State* state, Queue* queue, Instruction instruction){
+    //should we use directionFromLastFloor? How to set?
+    Instruction prevFloor = (Instruction){state->currentFloor, state->directionFromLastFloor};
+    for (int i = 0; i < queue->length; i++){
+
+        //check up direction
+        if (queue->instructions[i].targetFloor >= instruction.targetFloor && instruction.targetFloor > prevFloor.targetFloor){
+
+            if (instruction.direction == UP || instruction.direction == STOP){
+                insertToQueue(queue, instruction, i);
+                return;
+            }
+        }
+
+        //check down direction
+        if (queue->instructions[i].targetFloor <= instruction.targetFloor && instruction.targetFloor < prevFloor.targetFloor){
+
+            if (instruction.direction == DOWN || instruction.direction == STOP){
+                insertToQueue(queue, instruction, i);
+                return;
+            }
+        }
+        prevFloor = queue->instructions[i];
+
+    }
+    //insertion failed, add to end of queue
+    queue->instructions[queue->length] = instruction;
+    queue->length++;
+}
+
+void addInstruction(Queue* queue, Instruction instruction, const State* state){
     //Only add instructions that are not already in the queue
     for (int i = 0; i < queue->length; i++){
         if (queue->instructions[i].targetFloor == instruction.targetFloor && queue->instructions[i].direction == instruction.direction){
@@ -10,8 +55,7 @@ void addInstruction(Queue* queue, Instruction instruction){
         }
     }
 
-
-    if (queue->instructions == NULL){
+    if (queue->instructions == NULL || queue->length == 0){
         //initialise the queue, since class constructors are illegal now, apparantly
         queue->length = 0;
         queue->capacity = 1;
@@ -24,8 +68,7 @@ void addInstruction(Queue* queue, Instruction instruction){
         queue->instructions = (Instruction*)realloc(queue->instructions, queue->capacity * sizeof(Instruction));
     }
 
-    queue->instructions[queue->length] = instruction;
-    queue->length++;
+    smartInsert(state, queue, instruction);
 }
 
 void clearQueue(Queue* queue){
@@ -60,6 +103,8 @@ void resetQueueLights(Output* output){
         }
     }
 }
+
+
 
 void lightQueueStops(const Queue* queue, Output* output){
 

@@ -2,7 +2,7 @@
 
 
 double getSysTime(){
-    return (double)clock()/CLOCKS_PER_SEC;
+    return 100*(double)clock()/CLOCKS_PER_SEC;
 }
 
 void logState(const State* state){

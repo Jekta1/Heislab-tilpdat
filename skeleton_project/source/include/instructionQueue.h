@@ -3,7 +3,7 @@
 
 #include "dataStructures.h"
 
-void addInstruction(Queue* queue, Instruction instruction);
+void addInstruction(Queue* queue, Instruction instruction, const State* state);
 void clearQueue(Queue* queue);
 void clearInstruction(Queue* queue, int currentFloor);
 void removeInstruction(Queue* queue, int currentFloor);
