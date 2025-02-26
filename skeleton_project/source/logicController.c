@@ -24,6 +24,7 @@ void sequenceLogic(State* state, Queue* queue, Output* output){
 
     if (!state->obstruction){
         //edge case handeling: only ever close the door if there is no obstruction
+        //later handeling can set this to true, but this is the only point in the code that closes the door
         output->lights.openDoorLight = false;
     }
 
@@ -44,7 +45,7 @@ void onFloor(State* state, Queue* queue, Output* output){
     output->motorDirection = STOP;
     output->lights.openDoorLight = true;
 
-    //this should only happen once, making only posible to enter this function if the timer is active
+    //this should only happen once, ensuring future calls to this function on the same floor are only made if the timer is active
     removeInstruction(queue, state->currentFloor);
 
     if (!state->timer.active){
