@@ -30,7 +30,9 @@ void sequenceLogic(State* state, Queue* queue, Output* output){
 
 
     if (state->stopButton && state->onFloor){
-        //edge case handeling: if the stop button is pressed on a floor, open the door
+        //edge case handeling: if the stop button is pressed on a floor, open the door, activate the timer
+        state->timer.startTime = getSysTime();
+        state->timer.active = true;
         output->lights.openDoorLight = true;
     }
 }
